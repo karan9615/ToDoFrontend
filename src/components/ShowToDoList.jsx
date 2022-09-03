@@ -45,7 +45,7 @@ const ShowToDoList = () => {
   const [open, setOpen] = useState(false);
   const [id, setId] = useState("");
   const [filter, setFilter] = useState([]);
-  let [createBtn, setCreateBtn] = useState(0);
+  let [createBtn, setCreateBtn] = useState(100);
 
   const handleEdit = (e) => {
     setId(e.target.name);
@@ -59,7 +59,9 @@ const ShowToDoList = () => {
 
   const handleDelete = async (e) => {
     try {
-      await axios.delete(`https://aqueous-earth-55401.herokuapp.com/api/todo/${e.target.name}`);
+      await axios.delete(
+        `https://aqueous-earth-55401.herokuapp.com/api/todo/${e.target.name}`
+      );
       toast.success("Deleted Successfully");
       // setToDo(toDo.filter((val) => val._id !== e.target.name));
       fetchData();
@@ -94,9 +96,8 @@ const ShowToDoList = () => {
   };
 
   const handleCreateBtn = () => {
-    // console.log("create btn value",createBtn)
-    if (createBtn === 96) setCreateBtn(0);
-    if(createBtn === 0) setCreateBtn(96);
+    if (createBtn === 100) setCreateBtn(0);
+    else setCreateBtn(100);
   };
 
   return (
@@ -136,11 +137,11 @@ const ShowToDoList = () => {
           </div>
         )}
       </div>
-      <div className="fixed hidden sm:block right-0 top-20 min-h-screen pt-10 bg-red-500  shadow-lg">
+      <div className="fixed hidden sm:block sm:right-0 sm:top-20 sm:min-h-screen sm:pt-10 bg-red-500  shadow-lg">
         <CreateToDo fetchData={fetchData} />
       </div>
       <div
-        className={`fixed sm:hidden -right-${createBtn} top-20 min-h-screen pt-10 bg-red-500  shadow-lg transition-all duration-1000`}
+        className={`fixed sm:hidden ${createBtn === 100 ? "-right-[100%]": "-right-[0%]"} top-20 min-h-screen pt-10 bg-red-500  shadow-lg transition-all duration-1000`}
       >
         <CreateToDo fetchData={fetchData} handleCreateBtn={handleCreateBtn} />
       </div>
