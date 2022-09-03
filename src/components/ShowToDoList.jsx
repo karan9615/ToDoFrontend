@@ -95,7 +95,7 @@ const ShowToDoList = () => {
 
   const handleCreateBtn = () => {
     if (createBtn === 96) setCreateBtn(0);
-    else setCreateBtn(96);
+    if(createBtn === 0) setCreateBtn(96);
   };
 
   return (
