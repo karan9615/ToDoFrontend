@@ -45,7 +45,7 @@ const ShowToDoList = () => {
   const [open, setOpen] = useState(false);
   const [id, setId] = useState("");
   const [filter, setFilter] = useState([]);
-  const [createBtn, setCreateBtn] = useState(96);
+  let [createBtn, setCreateBtn] = useState(96);
 
   const handleEdit = (e) => {
     setId(e.target.name);
