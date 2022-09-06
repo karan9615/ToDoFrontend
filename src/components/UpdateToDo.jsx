@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import Modal from "react-modal"
+import {LoadingOutlined} from "@ant-design/icons"
 
 const UpdateToDo = ({ _id,open,handleClose,fetchData}) => {
   // console.log("this is the id of the card",_id)
@@ -10,12 +11,15 @@ const UpdateToDo = ({ _id,open,handleClose,fetchData}) => {
     description: "",
   });
 
+  const [loading, setLoading] = useState(false)
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleUpdate = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       await axios.put(`https://aqueous-earth-55401.herokuapp.com/api/todo/${_id}`, formData);
       toast.success("Updated Successfully");
@@ -24,6 +28,7 @@ const UpdateToDo = ({ _id,open,handleClose,fetchData}) => {
       toast.error("Try Once Again");
       console.log(error);
     }
+    setLoading(false)
     setFormData({
       title: "",
       description: "",
@@ -45,7 +50,8 @@ const UpdateToDo = ({ _id,open,handleClose,fetchData}) => {
         &times;
       </button>
       <div className="flex flex-col items-center rounded-lg bg-gradient-to-tr from-blue-600 via-blue-400 to-blue-900 px-5 py-4">
-        <div className="text-2xl text-center text-white uppercase py-2 font-semibold">Update Notes</div>
+        { loading ? <div className="absolute top-1/2 left-1/2 text-4xl"><LoadingOutlined /></div> :
+        <div><div className="text-2xl text-center text-white uppercase py-2 font-semibold">Update Notes</div>
         <hr className="w-full" />
         <input
           type="text"
@@ -75,6 +81,8 @@ const UpdateToDo = ({ _id,open,handleClose,fetchData}) => {
           Submit
         </button>
         <Toaster />
+        </div>
+}
       </div>
       </Modal>
     </div>

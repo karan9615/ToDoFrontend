@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import UpdateToDo from "./UpdateToDo";
 import toast, { Toaster } from "react-hot-toast";
-import { SearchOutlined } from "@ant-design/icons";
+import { LoadingOutlined, SearchOutlined } from "@ant-design/icons";
 
 import CreateToDo from "./CreateToDo";
 
@@ -46,6 +46,7 @@ const ShowToDoList = () => {
   const [id, setId] = useState("");
   const [filter, setFilter] = useState([]);
   let [createBtn, setCreateBtn] = useState(100);
+  const [loading, setLoading] = useState(false);
 
   const handleEdit = (e) => {
     setId(e.target.name);
@@ -58,6 +59,7 @@ const ShowToDoList = () => {
   };
 
   const handleDelete = async (e) => {
+    setLoading(true);
     try {
       await axios.delete(
         `https://aqueous-earth-55401.herokuapp.com/api/todo/${e.target.name}`
@@ -69,16 +71,21 @@ const ShowToDoList = () => {
       toast.error("Try once again");
       console.log(err);
     }
+    setLoading(false);
   };
 
   const fetchData = useCallback(async () => {
-    await axios
-      .get("https://aqueous-earth-55401.herokuapp.com/api/todo/")
-      .then((res) => {
-        setToDo(res.data);
-        setFilter(res.data);
-      })
-      .catch((error) => console.log(error));
+    try {
+      setLoading(true);
+      const res = await axios.get(
+        "https://aqueous-earth-55401.herokuapp.com/api/todo/"
+      );
+      setToDo(res.data);
+      setFilter(res.data);
+      setLoading(false)
+    } catch (error) {
+      console.log(error)
+    }
   }, []);
 
   useEffect(() => {
@@ -122,6 +129,7 @@ const ShowToDoList = () => {
           onChange={handleSearch}
         />
       </div>
+      { loading ? <div className="absolute top-1/2 left-1/2 text-4xl"><LoadingOutlined /></div>:
       <div className="w-full sm:w-11/12 px-5 flex flex-wrap-reverse">
         {filter.length > 0 ? (
           filter?.map((data) => (
@@ -137,11 +145,14 @@ const ShowToDoList = () => {
           </div>
         )}
       </div>
+}
       <div className="fixed hidden sm:block sm:right-0 sm:top-20 sm:min-h-screen sm:pt-10 bg-red-500  shadow-lg">
         <CreateToDo fetchData={fetchData} />
       </div>
       <div
-        className={`fixed sm:hidden ${createBtn === 100 ? "-right-[100%]": "-right-[0%]"} top-20 min-h-screen pt-10 bg-red-500  shadow-lg transition-all duration-1000`}
+        className={`fixed sm:hidden ${
+          createBtn === 100 ? "-right-[100%]" : "-right-[0%]"
+        } top-20 min-h-screen pt-10 bg-red-500  shadow-lg transition-all duration-1000`}
       >
         <CreateToDo fetchData={fetchData} handleCreateBtn={handleCreateBtn} />
       </div>
